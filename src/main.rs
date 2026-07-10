@@ -1,29 +1,47 @@
-mod config;
+use std::io;
+
 mod models;
+mod screen;
+mod config;
+mod repository;
 
-use models::client::Client;
-use config::cnn;
+use screen::display;
+fn main() {
+    loop {
+        println!("CRUD Clients");
+        println!("\
+1. Create Clients
+2. List Clients
+3. Update Clients
+4. Delete Clients
+5. Quit\n\n
+        ");
 
-use std::result::Result;
-use mysql::prelude::Queryable;
+        let mut choice = String::new();
+        io::stdin().read_line(&mut choice).expect("Failed to read line");
 
-fn main() -> Result<(), mysql::Error> {
-    let mut cnn = cnn::get_connection()?;
-
-    let clients = cnn.query_map(
-        "SELECT id, name, phone FROM clients",
-        |(id, name, phone)| {
-            Client { id, name, phone }
+        match choice.trim() {
+            "1" => display::create_client(),
+            "2" => {
+                if let Err(e) = display::list_clients() {
+                    eprintln!("Error listing clients: {}", e);
+                }
+            },
+            "3" => {
+                if let Err(e) = display::update_clients() {
+                    eprintln!("Error updating clients: {}", e);
+                }
+            },
+            "4" => {
+                if let Err(e) = display::delete_client() {
+                    eprintln!("Error deleting clients: {}", e);
+                }
+            },
+            "5" => {
+                println!("Exiting...");
+                break;
+            },
+            _ => println!("Invalid choice"),
         }
-    )?;
-
-    for client in clients {
-        println!("{}", "-".repeat(60));
-        println!("ID: {}", client.id);
-        println!("Name: {}", client.name);
-        println!("Phone: {}", client.phone);
     }
-    println!("{}", "-".repeat(60));
-
-    Ok(())
 }
