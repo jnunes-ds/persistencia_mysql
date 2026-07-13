@@ -1,6 +1,5 @@
 use std::io;
 use std::process::Command;
-use uuid::Uuid;
 use crate::repository::client_repository;
 
 pub fn create_client() {
