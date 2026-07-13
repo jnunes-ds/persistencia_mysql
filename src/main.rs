@@ -12,8 +12,8 @@ fn main() {
         println!("\
 1. Create Clients
 2. List Clients
-3. Update Clients
-4. Delete Clients
+3. Update Client by id
+4. Delete Client by id
 5. Quit\n\n
         ");
 
